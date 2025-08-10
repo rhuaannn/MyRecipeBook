@@ -1,5 +1,9 @@
-﻿using MyRecipeBook.Communication.Requests;
+﻿using MyRecipeBook.Application.Services.Mapping;
+using MyRecipeBook.Communication.Requests;
 using MyRecipeBook.Communication.Responses;
+using MyRecipeBook.Exception;
+using MyRecipeBook.Exception.Exception;
+using MyRecipeBook.Exception.ExceptionBase;
 
 
 namespace MyRecipeBook.Application.UseCases.User.Register
@@ -10,9 +14,9 @@ namespace MyRecipeBook.Application.UseCases.User.Register
         {
             Validate(request);
 
+            var user = new UserMapping();
             return new ResponseRegisterUserJson
             {
-                Name = request.Name
             };
         }
 
@@ -23,8 +27,8 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 
             if (!result.IsValid)
             {
-                var messages = string.Join("; ", result.Errors.Select(e => e.ErrorMessage));
-                throw new Exception(messages);
+                var messages = result.Errors.Select(e => e.ErrorMessage).ToList();
+                throw new ErroOnValidationException(messages);
             }
         }
     }

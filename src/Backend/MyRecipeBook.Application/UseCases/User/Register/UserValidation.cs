@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MyRecipeBook.Communication.Requests;
+using MyRecipeBook.Exception;
 
 namespace MyRecipeBook.Application.UseCases.User.Register
 {
@@ -7,9 +8,9 @@ namespace MyRecipeBook.Application.UseCases.User.Register
     {
         public UserValidation()
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Name cannot be null.");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password cannot be empty.");
-            RuleFor(x => x.Email).NotEmpty().WithMessage("Email cannot be empty.");
+            RuleFor(x => x.Name).NotEmpty().MinimumLength(3).WithMessage(ResourceMessageException.NAME_EMPTY);
+            RuleFor(x => x.Password.Length).GreaterThanOrEqualTo(6).WithMessage(ResourceMessageException.PASSWORD);
+            RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage(ResourceMessageException.EMAIL_EMPTY);
         }
     }
 }
